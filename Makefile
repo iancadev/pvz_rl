@@ -6,6 +6,9 @@
 # Python path setup
 export PYTHONPATH := $(shell pwd)/pvz:$(shell pwd)/gym-pvz:$(PYTHONPATH)
 
+# Set environment variables for all targets
+.EXPORT_ALL_VARIABLES:
+
 # Default target - reproduce everything
 all: setup install train evaluate figures tables
 	@echo "🎉 All results reproduced! Check the results/ directory for figures and tables."

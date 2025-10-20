@@ -399,6 +399,7 @@ class PlayerQ_DQN():
         summary['observations'] = np.vstack(summary['observations'])
         summary['actions'] = np.vstack(summary['actions'])
         summary['rewards'] = np.vstack(summary['rewards'])
+        summary['episode_length'] = len(summary['rewards'])
         return summary
 
     def get_render_info(self):

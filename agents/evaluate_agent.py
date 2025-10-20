@@ -29,10 +29,10 @@ def evaluate(env, agent, n_iter=1000, verbose = True):
         summary['score'] = np.sum(summary["rewards"])
 
         score_hist.append(summary['score'])
-        iter_hist.append(min(env.env._scene._chrono, config.MAX_FRAMES))
-        
+        iter_hist.append(summary.get('episode_length', len(summary['rewards'])))
+
         sum_score += summary['score']
-        sum_iter += min(env.env._scene._chrono, config.MAX_FRAMES)
+        sum_iter += summary.get('episode_length', len(summary['rewards']))
         
         # if env.env._scene._chrono >= 1000:
         #    render_info = env.env._scene._render_info
