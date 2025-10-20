@@ -15,10 +15,10 @@ class PVZEnv_V2(gym.Env):
         
         self.action_space = Discrete(len(self.plant_deck) * config.N_LANES * config.LANE_LENGTH + 1)
         # self.action_space = MultiDiscrete([len(self.plant_deck), config.N_LANES, config.LANE_LENGTH]) # plant, lane, pos
-        self.observation_space = Tuple([MultiDiscrete([len(self.plant_deck)+1] * (config.N_LANES * config.LANE_LENGTH)), 
-                                        MultiDiscrete([MAX_ZOMBIE_HP] * (config.N_LANES * config.LANE_LENGTH)),
-                                        Discrete(MAX_SUN),
-                                        MultiBinary(len(self.plant_deck))]) # Action available
+        # Observation space should match the flattened array returned by _get_obs()
+        # obs_grid (45) + zombie_grid (45) + sun (1) + action_available (4) = 95 elements
+        obs_size = 2 * config.N_LANES * config.LANE_LENGTH + 1 + len(self.plant_deck)
+        self.observation_space = MultiDiscrete([max(len(self.plant_deck)+1, MAX_ZOMBIE_HP, MAX_SUN, 2)] * obs_size)
 
         "Which plant on the cell, is the lane attacked, is there a mower on the lane"
         self._plant_names = [plant_name for plant_name in self.plant_deck]
