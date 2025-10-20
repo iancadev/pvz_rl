@@ -129,7 +129,7 @@ if __name__ == "__main__":
         
     if agent_type == "DDQN":
         env = PlayerQ(render=False)
-        agent = torch.load("agents/agent_zoo/dfq5_epsexp")
+        agent = torch.load("agents/agent_zoo/dfq5_epsexp", weights_only=False)
         
     if agent_type == "AC":
         env = TrainerAC3(render=False, max_frames = 500*config.FPS)
