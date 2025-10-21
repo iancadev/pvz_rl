@@ -1,3 +1,4 @@
+pyproject.toml
 setup.py
 pvz/__init__.py
 pvz/config.py
