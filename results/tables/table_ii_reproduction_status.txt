@@ -1,0 +1,15 @@
+Table II: Statistical Significance Tests - Reproduction Status
+======================================================================
+
+STATUS: Cannot be properly reproduced
+
+LIMITATIONS:
+- Single training runs only (no replication)
+- Missing evaluation data for some methods
+- No experimental design for statistical comparison
+
+REQUIREMENTS FOR REPRODUCTION:
+- Multiple independent runs per algorithm (n≥5)
+- Standardized evaluation protocol
+- Proper experimental controls
+
