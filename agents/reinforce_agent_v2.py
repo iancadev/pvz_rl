@@ -24,7 +24,7 @@ class PolicyNetV2(nn.Module):
     def forward(self, x):
         x = F.leaky_relu(self.fc1(x))
         x = self.fc2(x)
-        return F.log_softmax(x)
+        return F.log_softmax(x, dim=-1)
 
 class ReinforceAgentV2():
     def __init__(self,input_size, possible_actions):
