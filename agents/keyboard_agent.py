@@ -46,6 +46,7 @@ class PVZ():
         self.max_frames = max_frames
         self.render = render
         self._grid_size = config.N_LANES * config.LANE_LENGTH
+        self.current_episode_steps = 0
 
         
     def get_actions(self):
@@ -77,11 +78,13 @@ class PVZ():
         summary['rewards'] = list()
         summary['observations'] = list()
         summary['actions'] = list()
-        observation = self._transform_observation(self.env.reset())
-        
+        observation, _ = self.env.reset()
+        observation = self._transform_observation(observation)
+        self.current_episode_steps = 0
+
         t = 0
 
-        while(self.env._scene._chrono<self.max_frames):
+        while(self.current_episode_steps < self.max_frames):
             if(self.render):
                 self.env.render()
             if np.random.random()<epsilon:
@@ -92,7 +95,9 @@ class PVZ():
 
             summary['observations'].append(observation)
             summary['actions'].append(action)
-            observation, reward, done, info = self.env.step(action)
+            observation, reward, terminated, truncated, info = self.env.step(action)
+            done = terminated or truncated
+            self.current_episode_steps += 1
             observation = self._transform_observation(observation)
             summary['rewards'].append(reward)
 

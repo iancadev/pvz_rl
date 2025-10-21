@@ -98,8 +98,8 @@ class ACAgent3():
 
 
     def load(self, nn_name_1, nn_name_2):
-        self.policy = torch.load(nn_name_1)
-        self.valuenet = torch.load(nn_name_2)
+        self.policy = torch.load(nn_name_1, weights_only=False)
+        self.valuenet = torch.load(nn_name_2, weights_only=False)
 
 
 
@@ -110,6 +110,7 @@ class TrainerAC3():
         self.max_frames = max_frames
         self.render = render
         self._grid_size = config.N_LANES * config.LANE_LENGTH
+        self.current_episode_steps = 0
 
 
     def get_actions(self):
@@ -141,11 +142,13 @@ class TrainerAC3():
         summary['rewards'] = list()
         summary['observations'] = list()
         summary['actions'] = list()
-        observation = self._transform_observation(self.env.reset())
+        observation, _ = self.env.reset()
+        observation = self._transform_observation(observation)
+        self.current_episode_steps = 0
 
         t = 0
 
-        while(self.env._scene._chrono<self.max_frames):
+        while(self.current_episode_steps < self.max_frames):
             if(self.render):
                 self.env.render()
 
@@ -153,9 +156,11 @@ class TrainerAC3():
 
             summary['observations'].append(observation)
             summary['actions'].append(action)
-            observation, reward, done, info = self.env.step(action)
+            observation, reward, terminated, truncated, info = self.env.step(action)
+            done = terminated or truncated
             observation = self._transform_observation(observation)
             summary['rewards'].append(reward)
+            self.current_episode_steps += 1
 
             if done:
                 break
@@ -163,6 +168,7 @@ class TrainerAC3():
         summary['observations'] = np.vstack(summary['observations'])
         summary['actions'] = np.vstack(summary['actions'])
         summary['rewards'] = np.vstack(summary['rewards'])
+        summary['episode_length'] = self.current_episode_steps
         return summary
 
     def get_render_info(self):

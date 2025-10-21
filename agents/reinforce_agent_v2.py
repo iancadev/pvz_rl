@@ -92,7 +92,7 @@ class ReinforceAgentV2():
         torch.save(self.policy, nn_name)
 
     def load(self, nn_name):
-        self.policy = torch.load(nn_name)
+        self.policy = torch.load(nn_name, weights_only=False)
 
     def _get_mask(self, observation):
         empty_cells = np.nonzero((observation[:self._grid_size]==0).reshape(config.N_LANES, config.LANE_LENGTH))
@@ -116,6 +116,7 @@ class PlayerV2():
         self.max_frames = max_frames
         self.render = render
         self._grid_size = config.N_LANES * config.LANE_LENGTH
+        self.current_episode_steps = 0
 
         
     def get_actions(self):
@@ -148,11 +149,13 @@ class PlayerV2():
         summary['rewards'] = list()
         summary['observations'] = list()
         summary['actions'] = list()
-        observation = self._transform_observation(self.env.reset())
-        
+        observation, _ = self.env.reset()
+        observation = self._transform_observation(observation)
+        self.current_episode_steps = 0
+
         t = 0
 
-        while(self.env._scene._chrono<self.max_frames):
+        while(self.current_episode_steps < self.max_frames):
             if(self.render):
                 self.env.render()
             if np.random.random()<epsilon:
@@ -163,7 +166,9 @@ class PlayerV2():
 
             summary['observations'].append(observation)
             summary['actions'].append(action)
-            observation, reward, done, info = self.env.step(action)
+            observation, reward, terminated, truncated, info = self.env.step(action)
+            done = terminated or truncated
+            self.current_episode_steps += 1
             observation = self._transform_observation(observation)
             summary['rewards'].append(reward)
 

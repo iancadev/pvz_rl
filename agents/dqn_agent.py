@@ -141,7 +141,8 @@ class DQNAgent:
         else:
             action = self.network.decide_action(self.s_0, mask, epsilon=self.epsilon)
             self.step_count += 1
-        s_1, r, done, _ = self.env.step(action)
+        s_1, r, terminated, truncated, _ = self.env.step(action)
+        done = terminated or truncated
         s_1 = self._transform_observation(s_1)
         self.rewards += r
         self.current_episode_steps += 1
@@ -153,7 +154,8 @@ class DQNAgent:
             if mode != "explore": # We document the end of the play
                 self.training_iterations.append(min(config.MAX_FRAMES, self.current_episode_steps))
             self.current_episode_steps = 0
-            self.s_0 = self._transform_observation(self.env.reset())
+            observation, _ = self.env.reset()
+            self.s_0 = self._transform_observation(observation)
         return done
     
     # def add_play_to_buffer(self):
@@ -180,7 +182,8 @@ class DQNAgent:
             #     self.add_play_to_buffer()
         ep = 0
         training = True
-        self.s_0 = self._transform_observation(self.env.reset())
+        observation, _ = self.env.reset()
+        self.s_0 = self._transform_observation(observation)
 
 
         while training:
@@ -201,7 +204,7 @@ class DQNAgent:
                 if done:
                     ep += 1
                     self.training_rewards.append(self.rewards)
-                    self.training_loss.append(np.mean(self.update_loss))
+                    self.training_loss.append(np.mean(self.update_loss) if self.update_loss else 0.0)
                     self.update_loss = []
                     mean_rewards = np.mean(
                         self.training_rewards[-self.window:])
@@ -313,7 +316,8 @@ class DQNAgent:
         self.rewards = 0
         self.step_count = 0
         self.current_episode_steps = 0
-        self.s_0 = self._transform_observation(self.env.reset())
+        observation, _ = self.env.reset()
+        self.s_0 = self._transform_observation(observation)
 
 class experienceReplayBuffer_DQN:
 
@@ -377,7 +381,8 @@ class PlayerQ_DQN():
         summary['rewards'] = list()
         summary['observations'] = list()
         summary['actions'] = list()
-        observation = self._transform_observation(self.env.reset())
+        observation, _ = self.env.reset()
+        observation = self._transform_observation(observation)
         
         t = 0
 
@@ -392,7 +397,8 @@ class PlayerQ_DQN():
             action = agent.decide_action(observation, self.env.mask_available_actions(), epsilon)
             summary['observations'].append(observation)
             summary['actions'].append(action)
-            observation, reward, done, info = self.env.step(action)
+            observation, reward, terminated, truncated, info = self.env.step(action)
+            done = terminated or truncated
             observation = self._transform_observation(observation)
             summary['rewards'].append(reward)
 

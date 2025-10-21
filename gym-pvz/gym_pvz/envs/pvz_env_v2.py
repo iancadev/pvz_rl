@@ -67,9 +67,11 @@ class PVZEnv_V2(gym.Env):
             episode_over = self._scene._chrono > config.MAX_FRAMES
             reward += self._scene.score
         ob = self._get_obs()
-        episode_over = (episode_over) or (self._scene.lives <= 0)
+        terminated = self._scene.lives <= 0  # Game over condition
+        truncated = self._scene._chrono > config.MAX_FRAMES  # Time limit
+        episode_over = terminated or truncated
         self._reward = reward
-        return ob, reward, episode_over, {}
+        return ob, reward, terminated, truncated, {}
     
     def _get_obs(self):
         obs_grid = np.zeros(config.N_LANES * config.LANE_LENGTH, dtype=int)
@@ -83,9 +85,11 @@ class PVZEnv_V2(gym.Env):
         return  np.concatenate([obs_grid, zombie_grid, [min(self._scene.sun, MAX_SUN)], action_available])
             
 
-    def reset(self):
+    def reset(self, seed=None, options=None):
+        if seed is not None:
+            np.random.seed(seed)
         self._scene = Scene(self.plant_deck, WaveZombieSpawner())
-        return self._get_obs()
+        return self._get_obs(), {}
 
     def render(self, mode='human'):
         print(self._scene)
