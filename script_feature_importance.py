@@ -43,4 +43,16 @@ shap_values = e.shap_values(
 
 s = np.stack([np.sum(s, axis=0) for s in shap_values])
 print(np.sum(s, axis=0))
-shap.summary_plot(shap_values)
+
+# Create results directory if it doesn't exist
+import os
+import matplotlib.pyplot as plt
+os.makedirs('results/figures', exist_ok=True)
+
+# Generate SHAP summary plot and save it
+plt.figure(figsize=(12, 8))
+shap.summary_plot(shap_values, show=False)
+plt.savefig('results/figures/shap_feature_importance.png', dpi=300, bbox_inches='tight')
+plt.close()
+
+print("✅ SHAP feature importance plot saved to results/figures/shap_feature_importance.png")

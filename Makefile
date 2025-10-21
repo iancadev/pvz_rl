@@ -1,7 +1,7 @@
 # Plants vs Zombies RL - Complete Reproduction Pipeline
 # Run 'make' to reproduce all figures and tables from the paper
 
-.PHONY: all full setup install train-quick train-full evaluate figures tables clean help quick test
+.PHONY: all full setup install train-quick train-full evaluate figures tables paper-figures paper-tables clean help quick test
 
 # Python path setup
 export PYTHONPATH := $(shell pwd)/pvz:$(shell pwd)/gym-pvz:$(PYTHONPATH)
@@ -22,18 +22,20 @@ help:
 	@echo "Plants vs Zombies RL - Reproduction Pipeline"
 	@echo ""
 	@echo "Targets:"
-	@echo "  all         - Quick demo with 200 episodes (default)"
-	@echo "  full        - Full reproduction with 100K episodes"
-	@echo "  setup       - Install dependencies and setup environment"
-	@echo "  install     - Install pvz and gym-pvz packages"
-	@echo "  train-quick - Train all agents with 200 episodes"
-	@echo "  train-full  - Train all agents with 100K episodes"
-	@echo "  evaluate    - Evaluate all trained agents"
-	@echo "  figures     - Generate all figures"
-	@echo "  tables      - Generate all tables"
-	@echo "  quick       - Quick demo with pre-trained agents"
-	@echo "  clean       - Clean generated files"
-	@echo "  help        - Show this help"
+	@echo "  all           - Quick demo with 200 episodes (default)"
+	@echo "  full          - Full reproduction with 100K episodes"
+	@echo "  setup         - Install dependencies and setup environment"
+	@echo "  install       - Install pvz and gym-pvz packages"
+	@echo "  train-quick   - Train all agents with 200 episodes"
+	@echo "  train-full    - Train all agents with 100K episodes"
+	@echo "  evaluate      - Evaluate all trained agents"
+	@echo "  figures       - Generate all figures (including paper figures)"
+	@echo "  tables        - Generate all tables (including paper tables)"
+	@echo "  paper-figures - Generate paper-specific figures only"
+	@echo "  paper-tables  - Generate paper-specific tables only"
+	@echo "  quick         - Quick demo with pre-trained agents"
+	@echo "  clean         - Clean generated files"
+	@echo "  help          - Show this help"
 
 # Setup dependencies
 setup:
@@ -90,11 +92,23 @@ evaluate: results
 figures: results
 	@echo "📈 Generating all figures..."
 	python3 scripts/generate_figures.py
+	python3 generate_paper_figures.py
 
 # Generate all tables
 tables: results
 	@echo "📋 Generating all tables..."
 	python3 scripts/generate_tables.py
+	python3 generate_paper_tables.py
+
+# Generate paper-specific figures only
+paper-figures: results
+	@echo "📈 Generating paper-specific figures..."
+	python3 generate_paper_figures.py
+
+# Generate paper-specific tables only
+paper-tables: results
+	@echo "📋 Generating paper-specific tables..."
+	python3 generate_paper_tables.py
 
 # Clean generated files
 clean:

@@ -61,12 +61,30 @@ def train(env, agent, n_iter=None, n_record=500, n_save=1000):
                     nn_name1 = input("Save name for policy net: ")
                     nn_name2 = input("Save name for value net: ")
 
-    plt.figure(200)
-    plt.plot(range(n_record, n_iter+1, n_record), score_plt)
-    plt.show()
-    plt.figure(300)
-    plt.plot(range(n_record, n_iter+1, n_record), iter_plt)
-    plt.show()
+    # Create results directory if it doesn't exist
+    os.makedirs('results/figures', exist_ok=True)
+
+    # Score plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(n_record, n_iter+1, n_record), score_plt, label='Actor-Critic Score')
+    plt.xlabel('Training Episodes')
+    plt.ylabel('Average Score')
+    plt.title('Actor-Critic Training Progress - Score')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.savefig('results/figures/actor_critic_training_score.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+    # Iterations plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(n_record, n_iter+1, n_record), iter_plt, label='Actor-Critic Iterations', color='green')
+    plt.xlabel('Training Episodes')
+    plt.ylabel('Average Game Length')
+    plt.title('Actor-Critic Training Progress - Game Length')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.savefig('results/figures/actor_critic_training_iterations.png', dpi=300, bbox_inches='tight')
+    plt.close()
 
 
 # Import your agent

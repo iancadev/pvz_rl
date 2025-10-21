@@ -261,9 +261,30 @@ if __name__ == "__main__":
             # input()
         
 
-    plt.plot(range(n_record, n_iter+1, n_record), score_plt)
-    plt.plot(range(n_evaluate, n_iter+1, n_evaluate), eval_score_plt, color='red')
-    plt.show()
-    plt.plot(range(n_record, n_iter+1, n_record), iter_plt)
-    plt.plot(range(n_evaluate, n_iter+1, n_evaluate), eval_iter_plt, color='red')
-    plt.show()
+    # Create results directory if it doesn't exist
+    import os
+    os.makedirs('results/figures', exist_ok=True)
+
+    # Score plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(n_record, n_iter+1, n_record), score_plt, label='Training Score', alpha=0.7)
+    plt.plot(range(n_evaluate, n_iter+1, n_evaluate), eval_score_plt, color='red', label='Evaluation Score', linewidth=2)
+    plt.xlabel('Training Episodes')
+    plt.ylabel('Average Score')
+    plt.title('REINFORCE Training Progress - Score')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.savefig('results/figures/reinforce_training_score.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+    # Iterations plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(n_record, n_iter+1, n_record), iter_plt, label='Training Iterations', alpha=0.7)
+    plt.plot(range(n_evaluate, n_iter+1, n_evaluate), eval_iter_plt, color='red', label='Evaluation Iterations', linewidth=2)
+    plt.xlabel('Training Episodes')
+    plt.ylabel('Average Game Length')
+    plt.title('REINFORCE Training Progress - Game Length')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.savefig('results/figures/reinforce_training_iterations.png', dpi=300, bbox_inches='tight')
+    plt.close()

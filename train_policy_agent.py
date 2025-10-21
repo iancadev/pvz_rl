@@ -77,12 +77,30 @@ def train(env, agent, n_iter=None, n_record=500, n_save=1000, n_evaluate=10000, 
         #     eval_score_plt.append(avg_score)
         #     eval_iter_plt.append(avg_iter)
         #     # input()
-    plt.plot(range(n_record, n_iter+1, n_record), score_plt)
-    # plt.plot(range(n_evaluate, n_iter+1, n_evaluate), eval_score_plt, color='red')
-    plt.show()
-    plt.plot(range(n_record, n_iter+1, n_record), iter_plt)
-    # plt.plot(range(n_evaluate, n_iter+1, n_evaluate), eval_iter_plt, color='red')
-    plt.show()
+    # Create results directory if it doesn't exist
+    os.makedirs('results/figures', exist_ok=True)
+
+    # Score plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(n_record, n_iter+1, n_record), score_plt, label='Policy Gradient Score')
+    plt.xlabel('Training Episodes')
+    plt.ylabel('Average Score')
+    plt.title('Policy Gradient Training Progress - Score')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.savefig('results/figures/policy_gradient_training_score.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+    # Iterations plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(n_record, n_iter+1, n_record), iter_plt, label='Policy Gradient Iterations', color='orange')
+    plt.xlabel('Training Episodes')
+    plt.ylabel('Average Game Length')
+    plt.title('Policy Gradient Training Progress - Game Length')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.savefig('results/figures/policy_gradient_training_iterations.png', dpi=300, bbox_inches='tight')
+    plt.close()
     evaluate(env, agent)
 
 
