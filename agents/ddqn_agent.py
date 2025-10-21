@@ -144,13 +144,15 @@ class DDQNAgent:
         s_1, r, done, _ = self.env.step(action)
         s_1 = self._transform_observation(s_1)
         self.rewards += r
+        self.current_episode_steps += 1
         # self.pre_buffer.append((self.s_0, action, done, s_1))
         # self.pre_buffer_rewards.append(r)
         self.buffer.append(self.s_0, action, r, done, s_1)
         self.s_0 = s_1.copy()
         if done:
             if mode != "explore": # We document the end of the play
-                self.training_iterations.append(min(config.MAX_FRAMES, self.env._scene._chrono))
+                self.training_iterations.append(min(config.MAX_FRAMES, self.current_episode_steps))
+            self.current_episode_steps = 0
             self.s_0 = self._transform_observation(self.env.reset())
         return done
     
@@ -235,7 +237,7 @@ class DDQNAgent:
         rewards_t = torch.FloatTensor(rewards).to(device=self.network.device).reshape(-1,1)
         actions_t = torch.LongTensor(np.array(actions)).reshape(-1,1).to(
             device=self.network.device)
-        dones_t = torch.ByteTensor(dones).to(device=self.network.device)
+        dones_t = torch.BoolTensor(dones).to(device=self.network.device)
 
         qvals = torch.gather(self.network.get_qvals(states), 1, actions_t) # The selected action already respects the mask
         
@@ -310,6 +312,7 @@ class DDQNAgent:
         self.sync_eps = []
         self.rewards = 0
         self.step_count = 0
+        self.current_episode_steps = 0
         self.s_0 = self._transform_observation(self.env.reset())
 
 class experienceReplayBuffer:
