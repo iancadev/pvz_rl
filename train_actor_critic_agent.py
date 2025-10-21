@@ -1,5 +1,6 @@
 from agents import evaluate
 import gym
+import os
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="gym")
 from itertools import count
@@ -14,7 +15,10 @@ from pvz import config
 import matplotlib.pyplot as plt
 
 
-def train(env, agent, n_iter=1000, n_record=500, n_save=1000):
+def train(env, agent, n_iter=None, n_record=500, n_save=1000):
+    # Get iteration count from environment variable, default to 200 for quick demo
+    if n_iter is None:
+        n_iter = int(os.environ.get('PVZ_EPISODES', 200))
     sum_score = 0
     sum_iter = 0
     score_plt = []

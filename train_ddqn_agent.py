@@ -1,4 +1,5 @@
 import gym
+import os
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="gym")
 from agents import experienceReplayBuffer, DDQNAgent, QNetwork
@@ -9,7 +10,8 @@ from copy import deepcopy
 
 
 if __name__ == "__main__":
-    n_iter = 1000
+    # Get iteration count from environment variable, default to 200 for quick demo
+    n_iter = int(os.environ.get('PVZ_EPISODES', 200))
     env = gym.make('gym_pvz:pvz-env-v2')
     nn_name = input("Save name: ")
     buffer = experienceReplayBuffer(memory_size=100000, burn_in=10000)

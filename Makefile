@@ -1,7 +1,7 @@
 # Plants vs Zombies RL - Complete Reproduction Pipeline
 # Run 'make' to reproduce all figures and tables from the paper
 
-.PHONY: all setup install train evaluate figures tables clean help
+.PHONY: all full setup install train-quick train-full evaluate figures tables clean help quick test
 
 # Python path setup
 export PYTHONPATH := $(shell pwd)/pvz:$(shell pwd)/gym-pvz:$(PYTHONPATH)
@@ -9,25 +9,31 @@ export PYTHONPATH := $(shell pwd)/pvz:$(shell pwd)/gym-pvz:$(PYTHONPATH)
 # Set environment variables for all targets
 .EXPORT_ALL_VARIABLES:
 
-# Default target - reproduce everything
-all: setup install train evaluate figures tables
-	@echo "🎉 All results reproduced! Check the results/ directory for figures and tables."
+# Default target - quick demo with short training (200 episodes)
+all: setup install train-quick
+	@echo "🎉 Quick demo completed! Use 'make full' for complete reproduction."
+
+# Full reproduction with long training (100K episodes)
+full: setup install train-full evaluate figures tables
+	@echo "🎉 Full reproduction completed! Check the results/ directory for figures and tables."
 
 # Help target
 help:
 	@echo "Plants vs Zombies RL - Reproduction Pipeline"
 	@echo ""
 	@echo "Targets:"
-	@echo "  all       - Reproduce all results (default)"
-	@echo "  setup     - Install dependencies and setup environment"
-	@echo "  install   - Install pvz and gym-pvz packages"
-	@echo "  train     - Train all agents (DDQN, DQN, Actor-Critic, Policy)"
-	@echo "  evaluate  - Evaluate all trained agents"
-	@echo "  figures   - Generate all figures"
-	@echo "  tables    - Generate all tables"
-	@echo "  quick     - Quick demo with pre-trained agents"
-	@echo "  clean     - Clean generated files"
-	@echo "  help      - Show this help"
+	@echo "  all         - Quick demo with 200 episodes (default)"
+	@echo "  full        - Full reproduction with 100K episodes"
+	@echo "  setup       - Install dependencies and setup environment"
+	@echo "  install     - Install pvz and gym-pvz packages"
+	@echo "  train-quick - Train all agents with 200 episodes"
+	@echo "  train-full  - Train all agents with 100K episodes"
+	@echo "  evaluate    - Evaluate all trained agents"
+	@echo "  figures     - Generate all figures"
+	@echo "  tables      - Generate all tables"
+	@echo "  quick       - Quick demo with pre-trained agents"
+	@echo "  clean       - Clean generated files"
+	@echo "  help        - Show this help"
 
 # Setup dependencies
 setup:
@@ -44,18 +50,31 @@ install:
 results:
 	@mkdir -p results/figures results/tables results/models
 
-# Train all agents
-train: install results
-	@echo "🚀 Training all agents..."
+# Quick training with 200 episodes (for demos)
+train-quick: install results
+	@echo "🚀 Training all agents (200 episodes)..."
 	@echo "Training DDQN agent..."
-	echo "ddqn_reproduction" | python3 train_ddqn_agent.py
+	PVZ_EPISODES=200 echo "ddqn_quick" | python3 train_ddqn_agent.py
 	@echo "Training DQN agent..."
-	echo "dqn_reproduction" | python3 train_dqn_agent.py
+	PVZ_EPISODES=200 echo "dqn_quick" | python3 train_dqn_agent.py
 	@echo "Training Actor-Critic agent..."
-	python3 train_actor_critic_agent.py
+	PVZ_EPISODES=200 python3 train_actor_critic_agent.py
 	@echo "Training Policy agent..."
-	python3 train_policy_agent.py
-	@echo "✅ All agents trained!"
+	PVZ_EPISODES=200 python3 train_policy_agent.py
+	@echo "✅ All agents trained (quick mode)!"
+
+# Full training with 100K episodes (for complete reproduction)
+train-full: install results
+	@echo "🚀 Training all agents (100K episodes)..."
+	@echo "Training DDQN agent..."
+	PVZ_EPISODES=100000 echo "ddqn_reproduction" | python3 train_ddqn_agent.py
+	@echo "Training DQN agent..."
+	PVZ_EPISODES=100000 echo "dqn_reproduction" | python3 train_dqn_agent.py
+	@echo "Training Actor-Critic agent..."
+	PVZ_EPISODES=100000 python3 train_actor_critic_agent.py
+	@echo "Training Policy agent..."
+	PVZ_EPISODES=100000 python3 train_policy_agent.py
+	@echo "✅ All agents trained (full mode)!"
 
 # Quick demo with pre-trained agents (for testing)
 quick: install results
