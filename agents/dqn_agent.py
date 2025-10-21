@@ -237,7 +237,7 @@ class DQNAgent:
         rewards_t = torch.FloatTensor(rewards).to(device=self.network.device).reshape(-1,1)
         actions_t = torch.LongTensor(np.array(actions)).reshape(-1,1).to(
             device=self.network.device)
-        dones_t = torch.ByteTensor(dones).to(device=self.network.device)
+        dones_t = torch.BoolTensor(dones).to(device=self.network.device)
 
         qvals = torch.gather(self.network.get_qvals(states), 1, actions_t) # The selected action already respects the mask
         
