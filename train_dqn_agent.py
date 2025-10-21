@@ -7,7 +7,7 @@ from copy import deepcopy
 
 
 if __name__ == "__main__":
-    n_iter = 100000
+    n_iter = 1000
     env = gym.make('gym_pvz:pvz-env-v2')
     nn_name = input("Save name: ")
     buffer = experienceReplayBuffer_DQN(memory_size=100000, burn_in=10000)
