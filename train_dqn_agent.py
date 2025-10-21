@@ -1,4 +1,6 @@
 import gym
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="gym")
 from agents.dqn_agent import experienceReplayBuffer_DQN, DQNAgent, QNetwork_DQN
 import torch
 from agents import evaluate

@@ -1,5 +1,7 @@
 from agents import evaluate
 import gym
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="gym")
 from itertools import count
 import numpy as np
 import json
