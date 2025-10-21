@@ -29,10 +29,10 @@ help:
 	@echo "  train-quick   - Train all agents with 200 episodes"
 	@echo "  train-full    - Train all agents with 100K episodes"
 	@echo "  evaluate      - Evaluate all trained agents"
-	@echo "  figures       - Generate all figures (including paper figures)"
-	@echo "  tables        - Generate all tables (including paper tables)"
-	@echo "  paper-figures - Generate paper-specific figures only"
-	@echo "  paper-tables  - Generate paper-specific tables only"
+	@echo "  figures       - Generate all figures and tables"
+	@echo "  tables        - Generate all figures and tables"
+	@echo "  paper-figures - Generate all paper figures and tables"
+	@echo "  paper-tables  - Generate all paper figures and tables"
 	@echo "  quick         - Quick demo with pre-trained agents"
 	@echo "  clean         - Clean generated files"
 	@echo "  help          - Show this help"
@@ -91,24 +91,22 @@ evaluate: results
 # Generate all figures
 figures: results
 	@echo "📈 Generating all figures..."
-	python3 scripts/generate_figures.py
-	python3 generate_paper_figures.py
+	python3 generate_all_paper_content.py
 
 # Generate all tables
 tables: results
 	@echo "📋 Generating all tables..."
-	python3 scripts/generate_tables.py
-	python3 generate_paper_tables.py
+	python3 generate_all_paper_content.py
 
 # Generate paper-specific figures only
 paper-figures: results
 	@echo "📈 Generating paper-specific figures..."
-	python3 generate_paper_figures.py
+	python3 generate_all_paper_content.py
 
 # Generate paper-specific tables only
 paper-tables: results
 	@echo "📋 Generating paper-specific tables..."
-	python3 generate_paper_tables.py
+	python3 generate_all_paper_content.py
 
 # Clean generated files
 clean:

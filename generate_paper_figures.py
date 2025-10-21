@@ -156,14 +156,16 @@ def generate_ddqn_learning_curves():
     ax1.set_ylabel('Total score')
     ax1.set_title('DDQN Learning Curves')
     ax1.grid(True, alpha=0.3)
-    ax1.set_ylim(0, max(rewards) * 1.1)
+    if len(rewards) > 0:
+        ax1.set_ylim(0, max(rewards) * 1.1)
 
     # Number of frames survived plot
     ax2.plot(x, iterations, alpha=0.7, color='red')
     ax2.set_xlabel('Number of plays')
     ax2.set_ylabel('Number of frames survived')
     ax2.grid(True, alpha=0.3)
-    ax2.set_ylim(0, max(iterations) * 1.1)
+    if len(iterations) > 0:
+        ax2.set_ylim(0, max(iterations) * 1.1)
 
     plt.tight_layout()
     plt.savefig('results/figures/figure_2_ddqn_learning_curves.png')
