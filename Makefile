@@ -37,8 +37,8 @@ setup:
 # Install packages
 install:
 	@echo "🔧 Installing pvz and gym-pvz packages..."
-	cd pvz && pip install -e .
-	cd gym-pvz && pip install -e .
+	cd pvz && pip install -e . --use-pep517
+	cd gym-pvz && pip install -e . --use-pep517
 
 # Create results directory
 results:

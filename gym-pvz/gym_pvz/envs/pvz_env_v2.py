@@ -67,8 +67,8 @@ class PVZEnv_V2(gym.Env):
             episode_over = self._scene._chrono > config.MAX_FRAMES
             reward += self._scene.score
         ob = self._get_obs()
-        terminated = self._scene.lives <= 0  # Game over condition
-        truncated = self._scene._chrono > config.MAX_FRAMES  # Time limit
+        terminated = bool(self._scene.lives <= 0)  # Game over condition
+        truncated = bool(self._scene._chrono > config.MAX_FRAMES)  # Time limit
         episode_over = terminated or truncated
         self._reward = reward
         return ob, reward, terminated, truncated, {}

@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gym_pvz"
+version = "0.0.1"
+description = "OpenAI Gym environment for Plants vs Zombies"
+authors = [{name = "PVZ RL Team"}]
+requires-python = ">=3.8"
+dependencies = ["gym"]
+
+[tool.setuptools]
+packages = ["gym_pvz"]

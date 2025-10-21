@@ -5,10 +5,6 @@ register(
     entry_point='gym_pvz.envs:PVZEnv'
 )
 
-register(
-    id='pvz-env-v1',
-    entry_point='gym_pvz.envs:PVZEnv_V1'
-)
 
 register(
     id='pvz-env-v01',
