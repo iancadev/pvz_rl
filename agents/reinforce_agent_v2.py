@@ -74,14 +74,20 @@ class ReinforceAgentV2():
         loss = 0
         for observation_batch, action_batch, reward_batch in self.iterate_minibatches(observation, actions, rewards, batchsize = 100, shuffle=True):
             #import pdb; pdb.set_trace()
-            mask_batch = torch.Tensor([self._get_mask(s) for s in observation_batch]).type(torch.BoolTensor).detach()
+            # Convert list of numpy masks to single numpy array, then to tensor
+            mask_list = [self._get_mask(s) for s in observation_batch]
+            mask_array = np.array(mask_list)
+            mask_batch = torch.from_numpy(mask_array).bool().detach()
             
             s_var =  Variable(torch.from_numpy(observation_batch.astype(np.float32)))
             a_var = Variable(torch.from_numpy(action_batch).view(-1).type(torch.LongTensor))
             A_var = Variable(torch.from_numpy(reward_batch.astype(np.float32)))
             
             pred = self.policy.forward(s_var)
-            pred = pred / torch.Tensor([torch.sum(pred[i,:][mask_batch[i,:]]) for i in range(len(pred))]).view(-1,1)
+            # Compute normalization factors using masked sums (avoiding list comprehension)
+            masked_pred = pred * mask_batch.float()
+            norm_factors = torch.sum(masked_pred, dim=1, keepdim=True)
+            pred = pred / norm_factors
             
             loss += F.nll_loss(pred * A_var,a_var)
 
