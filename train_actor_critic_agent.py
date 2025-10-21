@@ -12,7 +12,7 @@ from pvz import config
 import matplotlib.pyplot as plt
 
 
-def train(env, agent, n_iter=100000, n_record=500, n_save=1000):
+def train(env, agent, n_iter=1000, n_record=500, n_save=1000):
     sum_score = 0
     sum_iter = 0
     score_plt = []

@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from agents import ReinforceAgentV2, PlayerV2
 
 
-def train(env, agent, n_iter=100000, n_record=500, n_save=1000, n_evaluate=10000, n_iter_evaluation=1000):
+def train(env, agent, n_iter=1000, n_record=500, n_save=1000, n_evaluate=10000, n_iter_evaluation=1000):
     sum_score = 0
     sum_iter = 0
     score_plt = []
