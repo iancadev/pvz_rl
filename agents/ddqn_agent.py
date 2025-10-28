@@ -412,4 +412,4 @@ class PlayerQ():
         return summary
 
     def get_render_info(self):
-        return self.env._scene._render_info
+        return self.env.get_render_info()

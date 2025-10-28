@@ -125,3 +125,7 @@ class PVZEnv_V2(gym.Env):
 
     def num_observations(self):
         return 2 * config.N_LANES * config.LANE_LENGTH + len(self.plant_deck) + 1
+
+    def get_render_info(self):
+        """Public method to access render info for visualization"""
+        return self._scene._render_info

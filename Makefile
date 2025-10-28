@@ -1,7 +1,7 @@
 # Plants vs Zombies RL - Complete Reproduction Pipeline
 # Run 'make' to reproduce all figures and tables from the paper
 
-.PHONY: all full setup install train-quick train-full evaluate figures tables paper-figures paper-tables clean help quick test
+.PHONY: all full setup install train-quick train-full evaluate figures tables paper-figures paper-tables clean help quick test play
 
 # Python path setup
 export PYTHONPATH := $(shell pwd)/pvz:$(shell pwd)/gym-pvz:$(PYTHONPATH)
@@ -34,6 +34,7 @@ help:
 	@echo "  paper-figures - Generate all paper figures and tables"
 	@echo "  paper-tables  - Generate all paper figures and tables"
 	@echo "  quick         - Quick demo with pre-trained agents"
+	@echo "  play          - Watch visual gameplay with pre-trained agent"
 	@echo "  clean         - Clean generated files"
 	@echo "  help          - Show this help"
 
@@ -124,3 +125,9 @@ test: install
 	python3 -c "import gym; import gym_pvz; env = gym.make('gym_pvz:pvz-env-v2'); print('✅ gym-pvz environment works')"
 	python3 -c "from agents import DDQNAgent, QNetwork; print('✅ agents package works')"
 	@echo "✅ All tests passed!"
+
+# Play visual game
+play: install
+	@echo "🎮 Starting visual gameplay with pre-trained DDQN agent..."
+	@echo "Close the pygame window to stop the game."
+	python3 game_render.py
