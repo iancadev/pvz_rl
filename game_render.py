@@ -6,6 +6,8 @@ from pvz import config
 import gym
 import torch
 import pygame
+import numpy as np
+np.bool8 = np.bool
 
 class PVZ():
     def __init__(self,render=True, max_frames = 1000):
@@ -64,7 +66,7 @@ def render(render_info):
     cumulated_score=0
 
     while render_info:
-        clock.tick(config.FPS)
+        clock.tick(config.FPS*5)
         screen.fill((130, 200, 100))
         frame_info = render_info.pop(0)
         
@@ -114,7 +116,9 @@ def render(render_info):
 
     pygame.quit()
 
-agent_type = "DDQN" # DDQN or Reinforce or AC or Keyboard
+
+agent_type = input("Agent type [Reinforce|DDQN|AC]: ")
+nn_name = input("nn_name: ")
 
 
 if __name__ == "__main__":
@@ -125,11 +129,13 @@ if __name__ == "__main__":
                 input_size=env.num_observations(),
                 possible_actions=env.get_actions()
         )
-        agent.load("agents/agent_zoo/dfp5")
+        nn_name = nn_name or "agents/agent_zoo/dfp5"
+        agent.load(nn_name)
         
     if agent_type == "DDQN":
         env = PlayerQ(render=False)
-        agent = torch.load("agents/agent_zoo/dfq5_epsexp", weights_only=False)
+        nn_name = nn_name or "agents/agent_zoo/dfq5_epsexp"
+        agent = torch.load(nn_name, weights_only=False)
         
     if agent_type == "AC":
         env = TrainerAC3(render=False, max_frames = 500*config.FPS)
@@ -137,7 +143,8 @@ if __name__ == "__main__":
                 input_size=env.num_observations(),
                 possible_actions=env.get_actions()
         )
-        agent.load("agents/agent_zoo/ac_policy_v1", "agents/agent_zoo/ac_value_v1")
+        nn_name = nn_name or "agents/agent_zoo/ac_v1"
+        agent.load(f"{nn_name}(policy)", f"{nn_name}(valuen)")
     
     if agent_type == "Keyboard":
         env = PlayerV2(render=True, max_frames = 500*config.FPS)

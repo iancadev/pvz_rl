@@ -47,7 +47,7 @@ setup:
 # Install packages
 install:
 	@echo "🔧 Installing pvz and gym-pvz packages..."
-	cd pvz && pip install -e . --use-pep517
+	cd pvz-pkg && pip install -e . --use-pep517
 	cd gym-pvz && pip install -e . --use-pep517
 
 # Create results directory
@@ -55,60 +55,72 @@ results:
 	@mkdir -p results/figures results/tables results/models
 
 # Quick training with 200 episodes (for demos)
+train-quick: PVZ_EPISODES=200
 train-quick: install results
 	@echo "🚀 Training all agents (200 episodes)..."
 	@echo "Training DDQN agent..."
-	PVZ_EPISODES=200 echo "ddqn_quick" | python3 train_ddqn_agent.py
+	echo ddqn_quick| python train_ddqn_agent.py
 	@echo "Training DQN agent..."
-	PVZ_EPISODES=200 echo "dqn_quick" | python3 train_dqn_agent.py
+	echo dqn_quick| python train_dqn_agent.py
 	@echo "Training Actor-Critic agent..."
-	PVZ_EPISODES=200 python3 train_actor_critic_agent.py
+	echo ac_quick| python train_actor_critic_agent.py
 	@echo "Training Policy agent..."
-	PVZ_EPISODES=200 python3 train_policy_agent.py
+	echo gp_quick| python train_policy_agent.py
 	@echo "✅ All agents trained (quick mode)!"
 
 # Full training with 100K episodes (for complete reproduction)
+train-full: PVZ_EPISODES=100000
 train-full: install results
 	@echo "🚀 Training all agents (100K episodes)..."
+# 	$$env:PVZ_EPISODES=100000
+# 	@echo "Training DDQN agent..."
+# 	"ddqn_reproduction" | python train_ddqn_agent.py
+# 	@echo "Training DQN agent..."
+# 	"dqn_reproduction" | python train_dqn_agent.py
+# 	@echo "Training Actor-Critic agent..."
+# 	"ac_reproduction" | python train_actor_critic_agent.py
+# 	@echo "Training Policy agent..."
+# 	"gp_reproduction" | python train_policy_agent.py
+# 	@echo "✅ All agents trained (full mode)!"
 	@echo "Training DDQN agent..."
-	PVZ_EPISODES=100000 echo "ddqn_reproduction" | python3 train_ddqn_agent.py
+	echo ddqn_reprod|python train_ddqn-lg.py
 	@echo "Training DQN agent..."
-	PVZ_EPISODES=100000 echo "dqn_reproduction" | python3 train_dqn_agent.py
+	echo dqn_reprod|python train_dqn-lg.py
 	@echo "Training Actor-Critic agent..."
-	PVZ_EPISODES=100000 python3 train_actor_critic_agent.py
+	echo ac_reprod|python train_ac-lg.py
 	@echo "Training Policy agent..."
-	PVZ_EPISODES=100000 python3 train_policy_agent.py
+	echo gp_reprod|python train_gp-lg.py
 	@echo "✅ All agents trained (full mode)!"
 
 # Quick demo with pre-trained agents (for testing)
 quick: install results
 	@echo "🎮 Running quick demo with pre-trained agents..."
-	python3 scripts/quick_evaluation.py
+	python scripts/quick_evaluation.py
 
 # Evaluate all agents
 evaluate: results
 	@echo "📊 Evaluating all agents..."
-	python3 scripts/evaluate_all_agents.py
+	python scripts/evaluate_all_agents.py
 
 # Generate all figures
 figures: results
 	@echo "📈 Generating all figures..."
-	python3 generate_all_paper_content.py
+	python generate_all_paper_content.py
 
 # Generate all tables
 tables: results
 	@echo "📋 Generating all tables..."
-	python3 generate_all_paper_content.py
+	python generate_all_paper_content.py
 
 # Generate paper-specific figures only
 paper-figures: results
 	@echo "📈 Generating paper-specific figures..."
-	python3 generate_all_paper_content.py
+	python generate_all_paper_content.py
 
 # Generate paper-specific tables only
 paper-tables: results
 	@echo "📋 Generating paper-specific tables..."
-	python3 generate_all_paper_content.py
+	python generate_all_paper_content.py
 
 # Clean generated files
 clean:
@@ -122,20 +134,26 @@ clean:
 # Test installation
 test: install
 	@echo "🧪 Testing installation..."
-	python3 -c "from pvz import config; print('✅ pvz package works')"
-	python3 -c "import gym; import gym_pvz; env = gym.make('gym_pvz:pvz-env-v2'); print('✅ gym-pvz environment works')"
-	python3 -c "from agents import DDQNAgent, QNetwork; print('✅ agents package works')"
+	python -c "from pvz import config; print('✅ pvz package works')"
+	python -c "import gym; import gym_pvz; env = gym.make('gym_pvz:pvz-env-v2'); print('✅ gym-pvz environment works')"
+	python -c "from agents import DDQNAgent, QNetwork; print('✅ agents package works')"
 	@echo "✅ All tests passed!"
 
 # Play visual game
-play: install
+play:
 	@echo "🎮 Starting visual gameplay with pre-trained DDQN agent..."
 	@echo "Close the pygame window to stop the game."
-	python3 game_render.py
+	python game_render.py
 
 # Play manual game
-play-manual: install
+play-manual:
 	@echo "🎮 Starting manual gameplay - YOU control the plants!"
 	@echo "Follow the on-screen prompts to place plants and defend against zombies."
 	@echo "Close the pygame window to stop the game."
-	python3 game_render_manual.py
+	python game_render_manual.py
+
+
+delayed-train-dqn:
+	timeout /t 10800
+	echo ddqn_reprod|python train_ddqn-lg.py
+	echo dqn_reprod|python train_dqn-lg.py

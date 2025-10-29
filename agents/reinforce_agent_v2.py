@@ -42,7 +42,12 @@ class ReinforceAgentV2():
         action_prob[np.logical_not(mask)] = 0
         action_prob /= torch.sum(action_prob[mask])
         # select random action weighted by probabilities
-        action =  np.random.choice(self.possible_actions, 1, p=action_prob.data.numpy())[0]
+        try:
+            action =  np.random.choice(self.possible_actions, 1, p=action_prob.data.numpy())[0]
+        except Exception as e:
+            print("Warning with normalized action_prob")
+            print(e)
+            return 0
         return action
 
     def discount_rewards(self,r,gamma):
@@ -187,7 +192,7 @@ class PlayerV2():
         return summary
 
     def get_render_info(self):
-        return self.env._scene._render_info
+        return self.env.unwrapped._scene._render_info
 
 
 if __name__ == "__main__":

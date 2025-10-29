@@ -13,9 +13,13 @@ from torch.autograd import Variable
 import torch.optim as optim
 from pvz import config
 import matplotlib.pyplot as plt
+np.bool8 = np.bool
 
 
 def train(env, agent, n_iter=None, n_record=500, n_save=1000):
+    nn_name = input("Save name: ")
+    nn_name1 = f"{nn_name}(policy)"
+    nn_name2 = f"{nn_name}(valuen)"
     # Get iteration count from environment variable, default to 200 for quick demo
     if n_iter is None:
         n_iter = int(os.environ.get('PVZ_EPISODES', 200))
@@ -52,15 +56,9 @@ def train(env, agent, n_iter=None, n_record=500, n_save=1000):
             sum_iter = 0
             sum_score = 0
             # input()
-        if not save:
-            if (episode_idx%n_save == n_save-1):
-                s = input("Save? (y/n): ")
-                if (s=='y'):
-                    save = True
-                    best_score = 0
-                    nn_name1 = input("Save name for policy net: ")
-                    nn_name2 = input("Save name for value net: ")
 
+    agent.save(nn_name1, nn_name2)
+    # agent._save_training_data(nn_name)
     # Create results directory if it doesn't exist
     os.makedirs('results/figures', exist_ok=True)
 
@@ -85,6 +83,9 @@ def train(env, agent, n_iter=None, n_record=500, n_save=1000):
     plt.grid(True, alpha=0.3)
     plt.savefig('results/figures/actor_critic_training_iterations.png', dpi=300, bbox_inches='tight')
     plt.close()
+
+    np.save(f'{nn_name}_rewards.npy', score_plt)
+    np.save(f'{nn_name}_iterations.npy', iter_plt)
 
 
 # Import your agent

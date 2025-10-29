@@ -13,7 +13,7 @@ from torch.autograd import Variable
 import torch.optim as optim
 from pvz import config
 import matplotlib.pyplot as plt
-
+np.bool8 = np.bool
 
 # Import your agent
 
@@ -21,6 +21,8 @@ from agents import ReinforceAgentV2, PlayerV2
 
 
 def train(env, agent, n_iter=None, n_record=500, n_save=1000, n_evaluate=10000, n_iter_evaluation=1000):
+    nn_name = input("Save name: ")
+
     # Get iteration count from environment variable, default to 200 for quick demo
     if n_iter is None:
         n_iter = int(os.environ.get('PVZ_EPISODES', 200))
@@ -53,7 +55,6 @@ def train(env, agent, n_iter=None, n_record=500, n_save=1000, n_evaluate=10000, 
         if (episode_idx%n_record == n_record-1):
             if save:
                 if sum_score >= best_score:
-                    agent.save(nn_name)
                     best_score = sum_score
             print("---Episode {}, mean score {}".format(episode_idx,sum_score/n_record))
             print("---n_iter {}".format(sum_iter/n_record))
@@ -62,13 +63,6 @@ def train(env, agent, n_iter=None, n_record=500, n_save=1000, n_evaluate=10000, 
             sum_iter = 0
             sum_score = 0
             # input()
-        if not save:
-            if (episode_idx%n_save == n_save-1):
-                s = input("Save? (y/n): ")
-                if (s=='y'):
-                    save = True
-                    best_score = 0
-                    nn_name = input("Save name: ")
 
         # if (episode_idx%n_evaluate == n_evaluate-1):
         #     avg_score, avg_iter = evaluate(env, agent, n_iter_evaluation)
@@ -78,6 +72,10 @@ def train(env, agent, n_iter=None, n_record=500, n_save=1000, n_evaluate=10000, 
         #     eval_iter_plt.append(avg_iter)
         #     # input()
     # Create results directory if it doesn't exist
+    agent.save(nn_name)
+    # agent._save_training_data(nn_name)
+
+
     os.makedirs('results/figures', exist_ok=True)
 
     # Score plot

@@ -172,4 +172,4 @@ class TrainerAC3():
         return summary
 
     def get_render_info(self):
-        return self.env._scene._render_info
+        return self.env.unwrapped._scene._render_info
