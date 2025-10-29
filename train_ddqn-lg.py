@@ -28,13 +28,16 @@ if __name__ == "__main__":
     # net.optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
     #                                       lr=net.learning_rate)
     agent = DDQNAgent(env, net, buffer, n_iter=n_iter, batch_size=200)
-    eval_freq = 500
+    eval_freq = 1000
     agent.train(max_episodes=1000, evaluate_frequency=eval_freq, evaluate_n_iter=1000)
     torch.save(agent.network, f"{nn_name}001000")
+    agent._save_training_data(nn_name)
     agent.train(max_episodes=10000 - 1000, evaluate_frequency=eval_freq, evaluate_n_iter=1000)
     torch.save(agent.network, f"{nn_name}010000")
+    agent._save_training_data(nn_name)
     agent.train(max_episodes=50000 - 10000, evaluate_frequency=eval_freq, evaluate_n_iter=1000)
     torch.save(agent.network, f"{nn_name}050000")
+    agent._save_training_data(nn_name)
     agent.train(max_episodes=100000 - 50000, evaluate_frequency=eval_freq, evaluate_n_iter=1000)
     torch.save(agent.network, nn_name)
     agent._save_training_data(nn_name)
