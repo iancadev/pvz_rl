@@ -53,6 +53,9 @@ To quickly see the system in action with pre-trained agents:
 make quick
 ```
 
+(The in-class demo likely used `python game_render.py`, if I remember correctly)
+
+
 ### Training Agents
 
 For quick training (200 episodes, ~5 minutes):
